@@ -7,6 +7,9 @@ data Primitive =
 data Val = Val Primitive String
     deriving (Show,Eq)
 
+data Identifier = Identifier String
+    deriving (Show,Eq)
+
 data Expression = 
     BinaryOperator Operator Expression Expression |
     Literal Val                                   |
@@ -18,12 +21,12 @@ data Statement =
     SExpression Expression                                  |
     SCompound [Statement]                                   |
 
-    SSelectionIf Condition Statement                        |
-    SSelectionIfElse Condition Statement Else Statement     |
+    SIf Condition Statement                        |
+    SIfElse Condition Statement Else Statement     |
 
-    SIterationWhile Condition Statement                     |
-    SIterationDoWhile Statement Condition                   |
-    SIterationFor Statement Condition Expression Statement  |
+    SWhile Condition Statement                     |
+    SDoWhile Statement Condition                   |
+    SFor Statement Condition Expression Statement  |
 
     SBreak                                                  |
     SContinue                                               |
@@ -34,9 +37,14 @@ data Statement =
     deriving (Show,Eq)
     
 
+data LStatement =
+    LStatement Identifier Statement           |
+    LCase Identifier Statement                |
+    LDefault Identifier Statement             
+    
 
 data Operator = 
-    Plus | 
+    Plus  | 
     Minus |
     Times |
     Divide
