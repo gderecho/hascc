@@ -10,6 +10,7 @@ data Val = Val Primitive String
 data Identifier = Identifier String
     deriving (Show,Eq)
 
+
 data Expression = 
     BinaryOperator Operator Expression Expression |
     Literal Val                                   |
@@ -17,12 +18,14 @@ data Expression =
     Return Val 
     deriving (Show,Eq)
 
+type Condition = Expression
+
 data Statement =
     SExpression Expression                                  |
     SCompound [Statement]                                   |
 
     SIf Condition Statement                        |
-    SIfElse Condition Statement Else Statement     |
+    SIfElse Condition Statement Statement          |
 
     SWhile Condition Statement                     |
     SDoWhile Statement Condition                   |

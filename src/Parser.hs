@@ -16,6 +16,30 @@ table = [[binary "*" Times Expr.AssocLeft,
          [binary "+" Plus Expr.AssocLeft, 
           binary "-" Minus Expr.AssocLeft]]
 
+s_exp :: Parser Statement
+s_exp = do
+    exp <- Parser.expression
+    semiend <- Lexer.semi
+    return $ SExpression exp
+
+s_comp :: Parser Statement
+s_comp = do
+    exps <- braces $ many statement
+    return $ SCompound exps
+
+s_return :: Parser Statement
+s_return = do
+    reserve "return"
+    value <- Parser.expression
+    semiend <- Lexer.semi
+    return $ SReturn value
+
+statement :: Parser Statement
+statement = try s_exp
+    <|> try s_return
+    <|> try s_comp
+    
+    
 
 int :: Parser Expression
 int = do
@@ -26,28 +50,10 @@ expression :: Parser Expression
 expression =
     Expr.buildExpressionParser table factor
 
-function :: Parser Expression
-function = do
-    reserve "int"
-    name   <- ident
-    params <- parens $ many expression
-    body   <- braces $ semicolon expression
-    return $ Function name $ body
-
-
-ret :: Parser Expression
-ret = do
-    reserve "return"
-    value <- Parser.int
-    return $ Return $ Val PInteger $ show value
 
 
 factor :: Parser Expression
 factor = try Parser.int
-    <|> try ret
-    <|> try function
-    <|> braces expression
-    <|> parens expression
 
 contents :: Parser a -> Parser a
 contents p = do
@@ -56,7 +62,7 @@ contents p = do
     eof
     return r
 
-parseAll :: String -> Either ParseError Expression
-parseAll = parse (contents expression) "<stdin>"
+parseAll :: String -> Either ParseError Statement
+parseAll = parse (contents statement) "<stdin>"
 
 

@@ -18,7 +18,6 @@ rnames = [
         "else",
         "enum",
         "extern",
-
         "float",
         "for",
         "goto",
@@ -28,7 +27,6 @@ rnames = [
         "register",
         "return",
         "short",
-
         "signed",
         "sizeof",
         "static",
@@ -101,7 +99,7 @@ lexer = Token.makeTokenParser style
             Token.commentEnd = "*/",
             Token.commentLine = "//",
             Token.nestedComments = True,
-            Token.reservedOpNames = rop,
+            Token.reservedOpNames = rops,
             Token.reservedNames = rnames,
             Token.caseSensitive = True
         }
@@ -117,9 +115,6 @@ parens = Token.parens lexer
 
 semi :: Parser String
 semi = Token.semi lexer
-
-semicolon :: Parser a -> Parser [a]
-semicolon = Token.semiSep lexer
 
 ident :: Parser String
 ident = Token.identifier lexer
