@@ -34,8 +34,21 @@ s_return = do
     semiend <- Lexer.semi
     return $ SReturn value
 
+s_decl :: Parser Statement
+s_decl = do
+    reserve "int"
+    id <- Lexer.ident
+    par <- Lexer.parens Lexer.int
+    stmt <- Parser.statement
+    return $ SDeclaration 
+        (DeclarationOnly 
+            (SInt)(DFunction $ Identifier id))
+        stmt
+    
+
 statement :: Parser Statement
 statement = try s_exp
+    <|> try s_decl
     <|> try s_return
     <|> try s_comp
     

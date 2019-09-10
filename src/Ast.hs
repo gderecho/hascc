@@ -10,6 +10,9 @@ data Val = Val Primitive String
 data Identifier = Identifier String
     deriving (Show,Eq)
 
+data Specifier =
+    SInt
+    deriving (Show, Eq)
 
 data Expression = 
     BinaryOperator Operator Expression Expression |
@@ -19,6 +22,16 @@ data Expression =
     deriving (Show,Eq)
 
 type Condition = Expression
+
+data Declarator =
+    DFunction Identifier -- returns void
+    deriving (Show,Eq)
+
+data Declaration = 
+    DeclarationOnly Specifier Declarator 
+    -- |
+    -- DeclarationInit Specifier Declarator Initializer
+    deriving (Show,Eq)
 
 data Statement =
     SExpression Expression                                  |
@@ -36,7 +49,7 @@ data Statement =
     SReturn Expression                                      |
     SGoto Identifier                                        |
 
-    SDeclaration
+    SDeclaration Declaration Statement
     deriving (Show,Eq)
     
 
@@ -44,6 +57,7 @@ data LStatement =
     LStatement Identifier Statement           |
     LCase Identifier Statement                |
     LDefault Identifier Statement             
+    deriving (Show,Eq)
     
 
 data Operator = 
