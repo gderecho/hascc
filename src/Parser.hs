@@ -44,6 +44,23 @@ declaration =  do
 s_decl = do
     dec <- declaration
     return $ SDecl dec
+
+s_if = do
+    reserve "if"
+    cond <- parens condition
+    body <- statement
+    return $ SIf cond body
+
+s_while = do
+    reserve "while"
+    cond <- parens condition
+    body <- statement
+    return $ SWhile cond body
+
+s_break = do
+    reserve "break"
+    semiend <- Lexer.semi
+    return SBreak;
     
 
 statement :: Parser Statement
@@ -51,6 +68,9 @@ statement = try s_exp
     <|> try s_return
     <|> try s_comp
     <|> try s_decl
+    <|> try s_if
+    <|> try s_while
+    <|> try s_break
     
     
 
@@ -62,6 +82,10 @@ int = do
 expression :: Parser Expression
 expression =
     Expr.buildExpressionParser table factor
+
+condition :: Parser Condition
+condition = expression
+
 
 file :: Parser [Statement]
 file =  many statement

@@ -40,7 +40,6 @@ rnames = [
         "while"
     ]
 
-rops :: [String]
 rops = [
     "=",
     "+=",
