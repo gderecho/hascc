@@ -5,22 +5,22 @@ import Test.HUnit.Base as HB
 import Ast
 
 test1 = TestCase $ HB.assertEqual 
-    ("Primiives")
+    ("Primitives")
     (PInteger) 
     (PInteger)
 
 test2 = TestCase $ HB.assertEqual
     ("Expressions")
     (BinaryOperator Plus
-        (Val PInteger "23")
-            (Val PInteger "25"))
+        (Literal $ Val PInteger "23")
+            (Literal $ Val PInteger "25"))
     (BinaryOperator Plus
-        (Val PInteger "23")
-            (Val PInteger "25"))
+        (Literal $ Val PInteger "23")
+            (Literal $ Val PInteger "25"))
 
 test3 = TestCase $ HB.assertBool
     "Expressions"
-    $ Val PInteger "123" /= Val PInteger "124"
+    $ Literal (Val PInteger "123") /= Literal (Val PInteger "124")
 
 test4 = TestCase $ HB.assertBool
     "Plus"
@@ -40,7 +40,8 @@ test6 = TestCase $ HB.assertEqual
 test7 = TestCase $ HB.assertBool
     "Expression"
     $ Function "Hello" [] /=
-    Function "Hello" [Val PInteger "32"]
+    Function "Hello" [Literal $ 
+        Val PInteger "32"]
 
 
 

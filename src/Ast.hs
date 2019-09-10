@@ -4,10 +4,14 @@ data Primitive =
     PInteger
     deriving (Show,Eq)
 
+data Val = Val Primitive String
+    deriving (Show,Eq)
+
 data Expression = 
     BinaryOperator Operator Expression Expression |
-    Val Primitive String |
-    Function String [Expression]
+    Literal Val |
+    Function String [Expression] |
+    Return Val 
     deriving (Show,Eq)
     
 

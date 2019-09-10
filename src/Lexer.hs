@@ -26,6 +26,18 @@ braces = Token.braces lexer
 parens :: Parser a -> Parser a
 parens = Token.parens lexer
 
+semi :: Parser String
+semi = Token.semi lexer
+
 semicolon :: Parser a -> Parser [a]
 semicolon = Token.semiSep lexer
+
+ident :: Parser String
+ident = Token.identifier lexer
+
+reserve :: String -> Parser ()
+reserve = Token.reserved lexer
+
+reserveOp :: String -> Parser ()
+reserveOp = Token.reservedOp lexer
 

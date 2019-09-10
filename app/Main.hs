@@ -25,5 +25,8 @@ program = unlines [
         "ret"
     ]
 
+input_to_asm :: String -> String
+input_to_asm x = program
+
 main :: IO ()
-main = putStrLn program
+main = interact input_to_asm
