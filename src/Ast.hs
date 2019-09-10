@@ -1,12 +1,14 @@
 module Ast where
 
 data Primitive =
-    Primitive Integer
+    PInteger
+    deriving (Show,Eq)
 
 data Expression = 
     BinaryOperator Operator Expression Expression |
-    Var Primitive String |
+    Val Primitive String |
     Function String [Expression]
+    deriving (Show,Eq)
     
 
 
@@ -15,4 +17,4 @@ data Operator =
     Minus |
     Times |
     Divide
-    deriving (Eq,Ord,Show)
+    deriving (Show,Eq)
