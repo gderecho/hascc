@@ -7,12 +7,9 @@ data Primitive =
 data Val = Val Primitive String
     deriving (Show,Eq)
 
--- data Identifier = Identifier String
---     deriving (Show,Eq)
 type Identifier = String
 
 type Specifier = Primitive
-    
 
 data Expression = 
     BinaryOperator Operator Expression Expression |
@@ -88,10 +85,6 @@ data LStatement =
     deriving (Show,Eq)
 -}
     
-data Line =
-    LStatement Statement |
-    LDeclaration Declaration
-
 data Operator = 
     Plus  | 
     Minus |
