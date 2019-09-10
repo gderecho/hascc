@@ -16,6 +16,56 @@ table = [[binary "*" Times Expr.AssocLeft,
          [binary "+" Plus Expr.AssocLeft, 
           binary "-" Minus Expr.AssocLeft]]
 
+qualifier :: Parser Qualifier
+qualifier =
+    try ( 
+        do 
+            reserve "void"
+            return QVoid)
+    <|>
+    try (
+        do
+            reserve "static"
+            return QStatic)
+    <|>
+    try (
+        do
+            reserve "extern"
+            return QExtern)
+    <|>
+    try ( 
+        do
+            reserve "const"
+            return QConst)
+
+spec_qual :: Parser SpecQual
+spec_qual =
+    try (
+        do 
+            qual <- qualifier
+            return $ SQQ qual)
+    <|>
+    try (
+        do 
+            prim <- Parser.pint
+            return $ SQP prim)
+    <|>
+    try (
+        do 
+            reserve "typedef"
+            return $ SQTypedef)
+    <|>
+    try (
+        do
+            reserve "auto"
+            return SQAuto)
+    <|>
+    try (
+        do
+            reserve "register"
+            return SQRegister)
+
+
 s_exp :: Parser Statement
 s_exp = do
     exp <- Parser.expression
@@ -35,10 +85,10 @@ s_return = do
     return $ SReturn value
 
 declaration =  do
-    reserve "int"
+    sq <- many spec_qual
     id <- Lexer.ident
     semiend <- Lexer.semi
-    return ([SQP PInt],
+    return (sq,
         [NPD $ DId id],[])
 
 s_decl = do
@@ -72,6 +122,10 @@ statement = try s_exp
     <|> try s_while
     <|> try s_break
     
+pint :: Parser Primitive
+pint = do
+    reserve "int"
+    return PInt
     
 
 int :: Parser Expression
