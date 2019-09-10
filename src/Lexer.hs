@@ -4,6 +4,95 @@ import Text.Parsec.String (Parser)
 import Text.Parsec.Language (emptyDef)
 import qualified Text.Parsec.Token as Token
 
+rnames :: [String]
+rnames = [
+        "auto",
+        "break",
+        "case",
+        "char",
+        "const",
+        "continue",
+        "default",
+        "do",
+        "double",
+        "else",
+        "enum",
+        "extern",
+
+        "float",
+        "for",
+        "goto",
+        "if",
+        "int",
+        "long",
+        "register",
+        "return",
+        "short",
+
+        "signed",
+        "sizeof",
+        "static",
+        "struct",
+        "switch",
+        "typedef",
+        "union",
+        "unsigned",
+        "void",
+        "volatile",
+        "while"
+    ]
+
+rops :: [String]
+rops = [
+    "=",
+    "+=",
+    "-=",
+    "*=",
+    "/=",
+    "=",
+    "%=",
+    "&=",
+    "|=",
+    "^=",
+    "<<=",
+    ">>=",
+
+    "++",
+    "--",
+
+    "+",
+    "-",
+    "*",
+    "/",
+    "%",
+    "&",
+    "|",
+    "^",
+    "<<",
+    ">>",
+
+    "!",
+    "&&",
+    "||",
+
+    "==",
+    "!=",
+    "<",
+    ">",
+    "<=",
+    ">=",
+
+    "->",
+    ".",
+    "->*",
+    ".*",
+
+    ",",
+    "?",
+    ":"
+    
+    ]
+
 lexer :: Token.TokenParser ()
 lexer = Token.makeTokenParser style
     where 
@@ -12,8 +101,8 @@ lexer = Token.makeTokenParser style
             Token.commentEnd = "*/",
             Token.commentLine = "//",
             Token.nestedComments = True,
-            Token.reservedOpNames = ["+","-","*","/",";"],
-            Token.reservedNames = ["int","return"],
+            Token.reservedOpNames = rop,
+            Token.reservedNames = rnames,
             Token.caseSensitive = True
         }
 

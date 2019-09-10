@@ -9,9 +9,28 @@ data Val = Val Primitive String
 
 data Expression = 
     BinaryOperator Operator Expression Expression |
-    Literal Val |
-    Function String [Expression] |
+    Literal Val                                   |
+    Function String [Expression]                  |
     Return Val 
+    deriving (Show,Eq)
+
+data Statement =
+    SExpression Expression                                  |
+    SCompound [Statement]                                   |
+
+    SSelectionIf Condition Statement                        |
+    SSelectionIfElse Condition Statement Else Statement     |
+
+    SIterationWhile Condition Statement                     |
+    SIterationDoWhile Statement Condition                   |
+    SIterationFor Statement Condition Expression Statement  |
+
+    SBreak                                                  |
+    SContinue                                               |
+    SReturn Expression                                      |
+    SGoto Identifier                                        |
+
+    SDeclaration
     deriving (Show,Eq)
     
 
