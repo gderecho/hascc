@@ -1,18 +1,18 @@
 module Ast where
 
 data Primitive =
-    PInteger
+    PInt
     deriving (Show,Eq)
 
 data Val = Val Primitive String
     deriving (Show,Eq)
 
-data Identifier = Identifier String
-    deriving (Show,Eq)
+-- data Identifier = Identifier String
+--     deriving (Show,Eq)
+type Identifier = String
 
-data Specifier =
-    SInt
-    deriving (Show, Eq)
+type Specifier = Primitive
+    
 
 data Expression = 
     BinaryOperator Operator Expression Expression |
@@ -24,14 +24,41 @@ data Expression =
 type Condition = Expression
 
 data Declarator =
-    DFunction Identifier -- returns void
+    DPtr [Qualifier] Declarator |
+    NPD NoPtrDeclarator 
     deriving (Show,Eq)
 
-data Declaration = 
-    DeclarationOnly Specifier Declarator 
-    -- |
-    -- DeclarationInit Specifier Declarator Initializer
+type Param = [(SpecQual,Identifier)]
+
+data NoPtrDeclarator =
+    DId Identifier |
+    DWrap Declarator | -- a declarator in parenthesis
+    DArray    NoPtrDeclarator [Qualifier] Expression | -- returns void
+    DArrayPtr NoPtrDeclarator [Qualifier] | 
+    DFunction NoPtrDeclarator [Param]
     deriving (Show,Eq)
+
+data Qualifier =
+    QVoid          |
+    QTyped String  |  -- a previous typedef result
+    QStatic        |  
+    QExtern        |
+    QConst
+    deriving (Show,Eq)
+
+data SpecQual =
+    SQP Primitive   |
+    SQQ Qualifier   |
+    SQTypedef |
+    SQAuto |
+    SQRegister
+    deriving (Show,Eq)
+
+    
+
+type Initializer = Expression
+
+type Declaration = ([SpecQual],[Declarator],[Initializer])
 
 data Statement =
     SExpression Expression                                  |
@@ -39,6 +66,7 @@ data Statement =
 
     SIf Condition Statement                        |
     SIfElse Condition Statement Statement          |
+    SSwitch Condition Statement Statement          |
 
     SWhile Condition Statement                     |
     SDoWhile Statement Condition                   |
@@ -47,18 +75,22 @@ data Statement =
     SBreak                                                  |
     SContinue                                               |
     SReturn Expression                                      |
-    SGoto Identifier                                        |
-
-    SDeclaration Declaration Statement
+    SGoto Identifier                                        | 
+    SDecl Declaration
     deriving (Show,Eq)
     
 
+{-
 data LStatement =
     LStatement Identifier Statement           |
     LCase Identifier Statement                |
     LDefault Identifier Statement             
     deriving (Show,Eq)
+-}
     
+data Line =
+    LStatement Statement |
+    LDeclaration Declaration
 
 data Operator = 
     Plus  | 

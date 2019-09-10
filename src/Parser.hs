@@ -34,39 +34,42 @@ s_return = do
     semiend <- Lexer.semi
     return $ SReturn value
 
-s_decl :: Parser Statement
-s_decl = do
+declaration =  do
     reserve "int"
     id <- Lexer.ident
-    par <- Lexer.parens Lexer.int
-    stmt <- Parser.statement
-    return $ SDeclaration 
-        (DeclarationOnly 
-            (SInt)(DFunction $ Identifier id))
-        stmt
+    semiend <- Lexer.semi
+    return ([SQP PInt],
+        [NPD $ DId id],[])
+
+s_decl = do
+    dec <- declaration
+    return $ SDecl dec
     
 
 statement :: Parser Statement
 statement = try s_exp
-    <|> try s_decl
     <|> try s_return
     <|> try s_comp
+    <|> try s_decl
     
     
 
 int :: Parser Expression
 int = do
     n <- Lexer.int
-    return $ Literal $ Val PInteger $ show n
+    return $ Literal $ Val PInt $ show n
 
 expression :: Parser Expression
 expression =
     Expr.buildExpressionParser table factor
 
+file :: Parser [Statement]
+file =  many statement
 
 
 factor :: Parser Expression
 factor = try Parser.int
+
 
 contents :: Parser a -> Parser a
 contents p = do
@@ -75,7 +78,5 @@ contents p = do
     eof
     return r
 
-parseAll :: String -> Either ParseError Statement
-parseAll = parse (contents statement) "<stdin>"
-
-
+parseAll :: String -> Either ParseError [Statement]
+parseAll = parse (contents file) "<stdin>"
