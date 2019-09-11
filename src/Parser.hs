@@ -16,6 +16,38 @@ table = [[binary "*" Times Expr.AssocLeft,
          [binary "+" Plus Expr.AssocLeft, 
           binary "-" Minus Expr.AssocLeft]]
 
+primitive :: Parser Primitive
+primitive = 
+    try ( 
+        do 
+            reserve "short"
+            return PShort)
+    <|>
+    try (
+        do
+            reserve "int"
+            return PInt)
+    <|>
+    try (
+        do
+            reserve "long"
+            return PLong)
+    <|>
+    try ( 
+        do
+            reserve "char"
+            return PChar)
+    <|>
+    try ( 
+        do
+            reserve "double"
+            return PDouble)
+    <|>
+    try ( 
+        do
+            reserve "float"
+            return PFloat)
+
 qualifier :: Parser Qualifier
 qualifier =
     try ( 
@@ -47,7 +79,7 @@ spec_qual =
     <|>
     try (
         do 
-            prim <- Parser.pint
+            prim <- primitive
             return $ SQP prim)
     <|>
     try (
@@ -122,16 +154,17 @@ statement = try s_exp
     <|> try s_while
     <|> try s_break
     
-pint :: Parser Primitive
-pint = do
-    reserve "int"
-    return PInt
     
 
 int :: Parser Expression
 int = do
     n <- Lexer.int
     return $ Literal $ Val PInt $ show n
+
+double :: Parser Expression
+double = do
+    n <- Lexer.double
+    return $ Literal $ Val PDouble $ show n
 
 expression :: Parser Expression
 expression =
@@ -146,7 +179,8 @@ file =  many statement
 
 
 factor :: Parser Expression
-factor = try Parser.int
+factor = try Parser.double
+    <|> try Parser.int
 
 
 contents :: Parser a -> Parser a

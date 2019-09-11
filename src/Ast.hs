@@ -1,7 +1,23 @@
 module Ast where
 
 data Primitive =
-    PInt
+    PInt          |
+    PUInt         |
+    PShort        |
+    PUShort       |
+    PLong         |
+    PULong        |
+    PLLong        |
+    PULLong       |
+
+    PChar         |
+    PUChar        |
+    PSChar        |
+
+    PFloat        |
+    PDouble       |
+    PLDouble      
+    
     deriving (Show,Eq)
 
 data Val = Val Primitive String

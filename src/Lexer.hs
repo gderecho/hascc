@@ -106,6 +106,12 @@ lexer = Token.makeTokenParser style
 int :: Parser Integer
 int = Token.natural lexer
 
+double :: Parser Double
+double = Token.float lexer
+
+char :: Parser Char
+char = Token.charLiteral lexer
+
 braces :: Parser a -> Parser a
 braces = Token.braces lexer
 
