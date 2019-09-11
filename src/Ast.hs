@@ -38,10 +38,10 @@ type Condition = Expression
 
 data Declarator =
     DPtr [Qualifier] Declarator |
-    NPD NoPtrDeclarator 
+    NPD NoPtrDeclarator
     deriving (Show,Eq)
 
-type Param = [(SpecQual,Identifier)]
+type Param = (SpecQual,Identifier)
 
 data NoPtrDeclarator =
     DId Identifier |

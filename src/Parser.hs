@@ -3,6 +3,7 @@ module Parser where
 import Text.Parsec
 import Text.Parsec.String (Parser)
 
+import qualified Text.Parsec.Char as Char
 import qualified Text.Parsec.Expr as Expr
 import qualified Text.Parsec.Token as Token
 
@@ -21,54 +22,54 @@ primitive =
     try ( 
         do 
             reserve "short"
-            return PShort)
+            return PShort )
     <|>
     try (
         do
             reserve "int"
-            return PInt)
+            return PInt )
     <|>
     try (
         do
             reserve "long"
-            return PLong)
+            return PLong )
     <|>
     try ( 
         do
             reserve "char"
-            return PChar)
+            return PChar )
     <|>
     try ( 
         do
             reserve "double"
-            return PDouble)
+            return PDouble )
     <|>
     try ( 
         do
             reserve "float"
-            return PFloat)
+            return PFloat )
 
 qualifier :: Parser Qualifier
 qualifier =
     try ( 
         do 
             reserve "void"
-            return QVoid)
+            return QVoid )
     <|>
     try (
         do
             reserve "static"
-            return QStatic)
+            return QStatic )
     <|>
     try (
         do
             reserve "extern"
-            return QExtern)
+            return QExtern )
     <|>
     try ( 
         do
             reserve "const"
-            return QConst)
+            return QConst )
 
 spec_qual :: Parser SpecQual
 spec_qual =
@@ -85,7 +86,7 @@ spec_qual =
     try (
         do 
             reserve "typedef"
-            return $ SQTypedef)
+            return SQTypedef)
     <|>
     try (
         do
@@ -96,7 +97,6 @@ spec_qual =
         do
             reserve "register"
             return SQRegister)
-
 
 s_exp :: Parser Statement
 s_exp = do
@@ -116,12 +116,53 @@ s_return = do
     semiend <- Lexer.semi
     return $ SReturn value
 
+param :: Parser Param
+param = do
+    sq <- spec_qual
+    id <- ident
+    return (sq,id)
+
+fn :: Parser Declarator
+fn = do
+    decl <- no_ptr_declarator
+    open <- Char.char '(' 
+    close <- Char.char ')' 
+    return $ NPD $
+        DFunction decl []
+
+no_ptr_declarator :: Parser NoPtrDeclarator
+no_ptr_declarator =
+    try (
+        do 
+            id <- ident
+            return $ DId id)
+    <|> try (
+        do 
+            decl <- parens declarator
+            return $ DWrap decl)
+
+declarator :: Parser Declarator
+declarator =
+    try fn
+    <|> try (
+        do
+            npd <- no_ptr_declarator
+            return $ NPD npd )
+    <|> try (
+        do
+            ignore <- spaces
+            star <- Char.char '*' 
+            ignore <- spaces
+            quals <- many qualifier
+            decl <- declarator
+            return $ DPtr [] decl ) 
+
+
 declaration =  do
     sq <- many spec_qual
-    id <- Lexer.ident
+    id <- Lexer.commasep declarator
     semiend <- Lexer.semi
-    return (sq,
-        [NPD $ DId id],[])
+    return (sq,id,[])
 
 s_decl = do
     dec <- declaration
