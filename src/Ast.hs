@@ -89,7 +89,8 @@ data Statement =
     SContinue                                               |
     SReturn Expression                                      |
     SGoto Identifier                                        | 
-    SDecl Declaration
+    SDecl Declaration                                       |
+    SFnDefinition Declaration Statement
     deriving (Show,Eq)
     
 

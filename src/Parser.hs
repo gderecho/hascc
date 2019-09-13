@@ -130,6 +130,13 @@ fn = do
     return $ NPD $
         DFunction decl []
 
+s_fn_definition :: Parser Statement
+s_fn_definition = do
+    sq <- many spec_qual
+    f <- fn
+    stmt <- statement
+    return $ SFnDefinition (sq,[f],[]) stmt
+
 no_ptr_declarator :: Parser NoPtrDeclarator
 no_ptr_declarator =
     try (
@@ -194,6 +201,7 @@ statement = try s_exp
     <|> try s_if
     <|> try s_while
     <|> try s_break
+    <|> try s_fn_definition
     
     
 
