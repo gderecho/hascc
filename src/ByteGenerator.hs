@@ -1,38 +1,24 @@
 module ByteGenerator where
 
-import Lexer
+import Byte
 import Ast
 
 
-program :: String -> String
-program x = unlines [
-    "SECTION .DATA",
-        "hello:      db \"Hello, world!\", 10, 0",
-        "hello_len:  equ $-hello",
-        "",
-    "SECTION .TEXT",
-        "GLOBAL main",
-        "EXTERN printf",
-        "",
-    "main:",
-        "sub rsp, 8 ",
-        "push rbx",
-        "push rbp",
-         " ",
-        "mov rdi, hello",
-        "call printf",
-        "",
-        "mov rax, " ++ x,
-        "",
-        "pop rbp",
-        "pop rbx",
-        "add rsp, 8",
-        "ret"
-    ]
 
+definition :: Statement -> [ByteLine]
+definition (SFnDefinition 
+                ([SQP PInt],[(NPD (DFunction (DId fname) []))],[]) 
+                (SCompound [SReturn (Literal (Val PInt x))])
+            )
+    = [(Just fname,Nothing,Nothing),
+       (Nothing,Just (Mov Rax (VL x)),Just "The return value")]
 
--- generator :: String -> String
--- generator = program 
+definition _ = error "Definition -- Not implemented"
 
+byte_generator :: [Statement] -> ByteProgram
+byte_generator [x] =
+    definition x
+
+byte_generator _ = error "Statement -- Not implemented"
 
 

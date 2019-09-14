@@ -134,6 +134,7 @@ s_fn_definition :: Parser Statement
 s_fn_definition = do
     sq <- many spec_qual
     f <- fn
+    ignore <- many Char.space
     stmt <- statement
     return $ SFnDefinition (sq,[f],[]) stmt
 
