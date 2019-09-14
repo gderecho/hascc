@@ -5,3 +5,4 @@ hascc.cabal
 asm/*.o
 asm/*.out
 asm/*.asm
+asm/*.c*
