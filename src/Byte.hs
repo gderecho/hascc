@@ -34,7 +34,9 @@ instance Show Register where
     show Rcx = "rcx"
     show Rdx = "rdx"
     show Rsp = "rsp"
+    show Rbp = "rbp"
     show Rsi = "rsi"
+    show Rdi = "rdi"
     show R8  = "r8"
     show R9  = "r9"
     show R10 = "r10"
@@ -108,7 +110,7 @@ instance Show Instruction where
     show (Jb   x ) = "jb " ++ show x               
     show (Jbe  x ) = "jbe " ++ show x               
     show (Call x ) = "call " ++ show x               
-    show Ret = "rt"
+    show Ret = "ret"
 
 
 type ByteLine = (Maybe Label, Maybe Instruction, Maybe Comment)
