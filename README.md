@@ -1,7 +1,7 @@
-# Project hascc
-### Almost completely non-functional
+### Project hascc
 The haskell c compiler.
 
+##### Status: Almost completely non-functional
 
 ## Example usage
 
