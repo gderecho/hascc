@@ -63,7 +63,7 @@ p_expression :: [(String,Offset)] -> Expression -> [ByteLine]
 p_expression 
     vars 
     (BinaryOperator Assign (Variable x) (Literal (Val PInt value)))
-        = [(Nothing, Just (Mov (VDeref Rsp offset) (VL value)),Just ("Assign to the variable " ++ show x))]
+        = [(Nothing, Just (Mov (VQword(VDeref Rsp offset)) (VL value)),Just ("Assign to the variable " ++ show x))]
         where offset = find_var x vars 
 
 p_expression _ _ = error "p_expression -- not implemented"

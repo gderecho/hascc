@@ -51,17 +51,19 @@ type Comment = String
 type Label = String
 
 data Value =
-    VR Register |
-    VL String   |
+    VR Register  |
+    VL String    |
+    VQword Value |
     VDeref Register Integer
     deriving (Eq)
 
 instance Show Value where
     show (VR x) = show x
     show (VL x) = show x
+    show (VQword x) = "qword " ++ show x
     show (VDeref x y) 
         = "[" ++ show x ++ 
-              " + "++ show y ++ "]"
+              " + " ++ show y ++ "]"
 
 data Instruction =
     Mov Value Value          |
