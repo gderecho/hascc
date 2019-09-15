@@ -216,6 +216,11 @@ double = do
     n <- Lexer.double
     return $ Literal $ Val PDouble $ show n
 
+string_literal :: Parser Expression
+string_literal = do
+    n <- Lexer.cchar_p
+    return $ Literal $ LCChar n
+
 fn_call :: Parser Expression
 fn_call = do
     id <- ident
@@ -237,9 +242,8 @@ file = many statement
 factor :: Parser Expression
 factor = try Parser.double
     <|> try Parser.int
+    <|> try Parser.string_literal
     <|> try Parser.fn_call
-
-
 
 
 contents :: Parser a -> Parser a

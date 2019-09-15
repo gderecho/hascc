@@ -121,6 +121,9 @@ parens = Token.parens lexer
 semi :: Parser String
 semi = Token.semi lexer
 
+cchar_p :: Parser String
+cchar_p = Token.stringLiteral lexer
+
 commasep :: Parser a -> Parser [a]
 commasep = Token.commaSep1 lexer
 
@@ -132,6 +135,7 @@ ident = Token.identifier lexer
 
 reserve :: String -> Parser ()
 reserve = Token.reserved lexer
+
 
 
 reserveOp :: String -> Parser ()

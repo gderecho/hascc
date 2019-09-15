@@ -20,7 +20,9 @@ data Primitive =
     
     deriving (Show,Eq)
 
-data Val = Val Primitive String
+data Val = 
+    Val Primitive String |
+    LCChar String
     deriving (Show,Eq)
 
 type Identifier = String
@@ -75,8 +77,8 @@ type Initializer = Expression
 type Declaration = ([SpecQual],[Declarator],[Initializer])
 
 data Statement =
-    SExpression Expression                                  |
-    SCompound [Statement]                                   |
+    SExpression Expression                         |
+    SCompound [Statement]                          |
 
     SIf Condition Statement                        |
     SIfElse Condition Statement Statement          |
@@ -86,11 +88,11 @@ data Statement =
     SDoWhile Statement Condition                   |
     SFor Statement Condition Expression Statement  |
 
-    SBreak                                                  |
-    SContinue                                               |
-    SReturn Expression                                      |
-    SGoto Identifier                                        | 
-    SDecl Declaration                                       |
+    SBreak                                         |
+    SContinue                                      |
+    SReturn Expression                             |
+    SGoto Identifier                               | 
+    SDecl Declaration                              |
     SFnDefinition Declaration Statement
     deriving (Show,Eq)
     
