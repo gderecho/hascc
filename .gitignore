@@ -6,3 +6,4 @@ asm/*.o
 asm/*.out
 asm/*.asm
 asm/*.c*
+asm/*.s

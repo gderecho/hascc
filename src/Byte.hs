@@ -64,6 +64,7 @@ data Instruction =
     Add Register Value       |
     Sub Register Value       |
     Cmp Register Register    |
+    Xor Register Register    |
     Push Register            |
     Pop  Register            |
     Inc  Register            |
@@ -91,6 +92,7 @@ instance Show Instruction where
     show (Add x y) = "add " ++ show x ++ ", " ++ show y
     show (Sub x y) = "sub " ++ show x ++ ", " ++ show y
     show (Cmp x y) = "cmp " ++ show x ++ ", " ++ show y
+    show (Xor x y) = "xor " ++ show x ++ ", " ++ show y
     show (Push x ) = "push " ++ show x
     show (Pop  x ) = "pop " ++ show x
     show (Inc  x ) = "inc " ++ show x            
