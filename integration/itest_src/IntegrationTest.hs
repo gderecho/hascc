@@ -3,6 +3,15 @@ import System.IO
 import System.Exit
 import System.Process
 import System.IO.Error
+import System.Directory
+import Data.Aeson
+
+
+data ExpResult = ExpResult {
+   compile :: Bool,
+   return_code :: Int
+   output :: String
+}
 
 p_code :: String -> ExitCode -> IO ()
 p_code msg code = do
@@ -35,6 +44,8 @@ code_to_int (ExitFailure a) = a
 run_cfile :: String -> String -> IO ()
 run_cfile cfile expectfile = do
     putStrLn $ "Running " ++ (cfile ++ "...")
+
+    putStrLn =<< readFile expectfile
     
     compile <- fmap code_to_int $ system $ "cat " ++ (cfile ++ " | stack run > temp.asm")
 
@@ -54,8 +65,6 @@ run_cfile cfile expectfile = do
     ret_val <- fmap code_to_int $ system "./temp.out"
     
     putStrLn $ "Exited with " ++ show ret_val
-    putStrLn "Expected: "
-    putStrLn =<< readFile expectfile
 
     code <- system "rm temp*"
     p_code "Failure to clean up temporary files." code
@@ -70,9 +79,16 @@ run_tests (x:xs) = do
     run_cfile (x!!0) (x!!1)
     run_tests xs
 
+-- TODO: make portable
+cd_to_itest_src :: IO ()
+cd_to_itest_src = do
+    homedir <- getHomeDirectory
+    setCurrentDirectory $ homedir ++ "/hascc/integration/itest_src"
+
 
 main :: IO ()
 main = do
+    cd_to_itest_src
     paths <- build_and_run_cpp >> get_paths
     run_tests paths
     clean_up
