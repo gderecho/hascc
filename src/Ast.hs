@@ -73,7 +73,7 @@ data SpecQual =
 
 type Initializer = Expression
 
-type Declaration = ([SpecQual],[Declarator],[Initializer])
+type Declaration = ([SpecQual],[(Declarator, Maybe Initializer)])
 
 data Statement =
     SExpression Expression                         |

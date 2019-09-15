@@ -9,12 +9,8 @@ call :: Statement -> [ByteLine]
 call _ = error "Call not implemented yet"
 
 
--- SDecl ([SQP PInt],[NPD (DId "i")],[])
-
-
-
 get_int_declarations :: [Statement] -> [Identifier]
-get_int_declarations xs = [x | SDecl ([SQP PInt],[NPD (DId x)],_) <- xs ]
+get_int_declarations xs = [x | SDecl ([SQP PInt],[(NPD (DId x),Nothing)]) <- xs ]
 
 var_size :: [Statement] -> Integer
 var_size = sum . map (\x -> 8) . get_int_declarations
@@ -79,7 +75,7 @@ p_statement _ _ x
 
 fdefinition :: Statement -> [ByteLine]
 fdefinition (SFnDefinition 
-                ([SQP PInt],[(NPD (DFunction (DId fname) []))],[]) 
+                ([SQP PInt],[((NPD (DFunction (DId fname) [])),Nothing)]) 
                 (SCompound xs)
                 -- (SCompound [SReturn (Literal (Val PInt x))])
             )

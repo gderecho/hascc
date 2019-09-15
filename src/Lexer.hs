@@ -137,7 +137,6 @@ reserve :: String -> Parser ()
 reserve = Token.reserved lexer
 
 
-
 reserveOp :: String -> Parser ()
 reserveOp = Token.reservedOp lexer
 

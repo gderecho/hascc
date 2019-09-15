@@ -136,7 +136,7 @@ s_fn_definition = do
     f <- fn
     ignore <- many Char.space
     stmt <- statement
-    return $ SFnDefinition (sq,[f],[]) stmt
+    return $ SFnDefinition (sq,[(f,Nothing)]) stmt
 
 no_ptr_declarator :: Parser NoPtrDeclarator
 no_ptr_declarator =
@@ -165,12 +165,25 @@ declarator =
             decl <- declarator
             return $ DPtr [] decl ) 
 
+decl_init :: Parser (Declarator, Maybe Initializer)
+decl_init =
+    try (
+        do
+            decl <- declarator
+            Lexer.reserveOp "="
+            exp <- expression
+            return $ (decl,Just exp) )
+    <|> try (
+        do
+            decl <- declarator
+            return $ (decl,Nothing) )
+
 
 declaration =  do
     sq <- many1 spec_qual
-    id <- Lexer.commasep declarator
+    id_init <- Lexer.commasep decl_init
     semiend <- Lexer.semi
-    return (sq,id,[])
+    return (sq,id_init)
 
 s_decl = do
     dec <- declaration
