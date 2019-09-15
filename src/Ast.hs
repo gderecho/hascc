@@ -33,7 +33,6 @@ data Expression =
     BinaryOperator Operator Expression Expression |
     Literal Val                                   |
     Function String [Expression]                  |
-    Return Val                                    |
     FnCall Identifier [Expression]
     deriving (Show,Eq)
 
@@ -47,10 +46,10 @@ data Declarator =
 type Param = (SpecQual,Identifier)
 
 data NoPtrDeclarator =
-    DId Identifier |
-    DWrap Declarator | -- a declarator in parenthesis
+    DId Identifier                                   |
+    DWrap Declarator                                 | -- a declarator in parenthesis
     DArray    NoPtrDeclarator [Qualifier] Expression | -- returns void
-    DArrayPtr NoPtrDeclarator [Qualifier] | 
+    DArrayPtr NoPtrDeclarator [Qualifier]            |
     DFunction NoPtrDeclarator [Param]
     deriving (Show,Eq)
 
@@ -65,8 +64,8 @@ data Qualifier =
 data SpecQual =
     SQP Primitive   |
     SQQ Qualifier   |
-    SQTypedef |
-    SQAuto |
+    SQTypedef       |
+    SQAuto          |
     SQRegister
     deriving (Show,Eq)
 
