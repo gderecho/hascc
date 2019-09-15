@@ -19,25 +19,6 @@ program s = unlines ([
         "EXTERN printf",
         ""]
         ++ s)
-        
-
-        {-
-            s, -- function name
-            "sub rsp, 8 ",
-            "push rbx",
-            "push rbp",
-             " ",
-            "mov rdi, hello",
-            "call printf",
-            "",
-            t, -- return value
-            "",
-            "pop rbp",
-            "pop rbx",
-            "add rsp, 8",
-            "ret"
-            ]
-        -}
 
 generator :: ByteProgram -> String
 generator = program . map btasm
