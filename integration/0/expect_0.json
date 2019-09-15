@@ -1,4 +1,2 @@
-{
-    "compile" : "true",
-    "return_code" : "0"
-}
+compile true
+return_code 0

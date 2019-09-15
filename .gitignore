@@ -7,6 +7,6 @@ asm/*.out
 asm/*.asm
 asm/*.c*
 asm/*.s
-IntegrationTest
+integration_test
 *.hi
 *.o

@@ -4,6 +4,9 @@
 #include <iostream>
 #include <stdexcept>
 #include <algorithm>
+#include "generate_paths.h"
+
+namespace {
 
 namespace file = std::filesystem;
 using path = file::path;
@@ -30,7 +33,7 @@ void cd_to_itest_src()
 
 
 // must be in itest_src directory
-std::vector<file::path> get_test_directories()
+std::vector<path> get_test_directories()
 {
     if(file::current_path().stem().string() 
             != "itest_src") {
@@ -52,29 +55,58 @@ std::vector<file::path> get_test_directories()
     return result; 
 }
 
+// processes an array of paths, representing
+// the source and expectation files
+void check_valid(
+        const std::vector<path> &files, 
+        const path &dir) 
+{
+    if(files.size() != 2) {
+        throw std::runtime_error("Not two files in " 
+                + dir.string());
+    }
 
-int main(int,char**)
+    if(files[0].extension() != ".c") {
+        throw std::runtime_error("Source file does " 
+                "not end in .c: "+ files[0].string());
+    }
+
+    if(files[1].extension() != ".json") {
+        throw std::runtime_error("Source file does " 
+                "not end in .json: "+ files[1].string());
+    }
+}
+
+
+} // namespace
+
+std::vector<std::pair<path,path>> generate_paths()
 {
     cd_to_itest_src();
 
-    std::vector test_directories = get_test_directories();
+    std::vector<path> test_directories
+            {get_test_directories()};
 
-    std::ofstream stream{"paths.txt"};
+    std::vector<std::pair<path,path>> result {};
+
     for(auto &dir : test_directories) {
-        if(dir.empty()) {
+
+        if(file::is_empty(dir)) {
             continue;
         }
+
         auto p {file::directory_iterator
                     {file::absolute(dir)}};
         std::vector<path> files {};
         for(auto &f : p) {
-            files.push_back(std::move(f));
+            files.push_back(f);
         }
-        std::sort(begin(files),end(files));
-        for(auto &f : files) {
-            stream << f.string() << " ";
-        }
-        stream << "\n";
+
+        sort(begin(files),end(files));
+        check_valid(files,dir);
+
+        result.emplace_back(
+                std::make_pair(files[0],files[1]));
     }
-    return 0;
-} 
+    return result;
+}

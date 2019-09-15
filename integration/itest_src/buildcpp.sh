@@ -1,2 +1,3 @@
-g++ -std=c++2a generate_paths.cpp \
-    -lstdc++fs -o generate_paths
+g++ -std=c++2a -O3 *.cpp \
+    -lstdc++fs  \
+    -o integration_test
