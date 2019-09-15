@@ -1,4 +1,5 @@
-# Project hascc -- Almost completely non-functional
+# Project hascc
+### Almost completely non-functional
 The haskell c compiler.
 
 
