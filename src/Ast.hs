@@ -31,7 +31,8 @@ data Expression =
     BinaryOperator Operator Expression Expression |
     Literal Val                                   |
     Function String [Expression]                  |
-    Return Val 
+    Return Val                                    |
+    FnCall Identifier [Expression]
     deriving (Show,Eq)
 
 type Condition = Expression

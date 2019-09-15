@@ -167,7 +167,7 @@ declarator =
 
 
 declaration =  do
-    sq <- many spec_qual
+    sq <- many1 spec_qual
     id <- Lexer.commasep declarator
     semiend <- Lexer.semi
     return (sq,id,[])
@@ -216,6 +216,12 @@ double = do
     n <- Lexer.double
     return $ Literal $ Val PDouble $ show n
 
+fn_call :: Parser Expression
+fn_call = do
+    id <- ident
+    args <- parens (commasep_or_none expression)
+    return $ FnCall id args
+
 expression :: Parser Expression
 expression =
     Expr.buildExpressionParser table factor
@@ -225,12 +231,15 @@ condition = expression
 
 
 file :: Parser [Statement]
-file =  many statement
+file = many statement
 
 
 factor :: Parser Expression
 factor = try Parser.double
     <|> try Parser.int
+    <|> try Parser.fn_call
+
+
 
 
 contents :: Parser a -> Parser a

@@ -124,6 +124,9 @@ semi = Token.semi lexer
 commasep :: Parser a -> Parser [a]
 commasep = Token.commaSep1 lexer
 
+commasep_or_none :: Parser a -> Parser [a]
+commasep_or_none = Token.commaSep lexer
+
 ident :: Parser String
 ident = Token.identifier lexer
 

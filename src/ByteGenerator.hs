@@ -60,6 +60,8 @@ ret_exp stack_size (Literal (Val PInt x)) =
     ]
 ret_exp _ _ = error "Return -- not implemented"
 
+
+-- p_statement: Processes a statement within a function
 -- Parameter 1: The stack size
 -- Parameter 2: The list of variable identifiers and their offsets
 -- Parameter 3: The statement to process
@@ -109,6 +111,5 @@ fdefinition _ = error "Definition -- Not implemented"
 
 byte_generator :: [Statement] -> ByteProgram
 byte_generator = concat . map fdefinition
-
 
 
