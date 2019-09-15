@@ -58,11 +58,18 @@ ret_exp stack_size (Literal (Val PInt x)) =
             (Nothing, Just Ret, Nothing)
         ]
     ]
+ret_exp _ _ = error "Return -- not implemented"
 
--- Param 1: The stack size
+-- Parameter 1: The stack size
+-- Parameter 2: The list of variable identifiers and their offsets
+-- Parameter 3: The statement to process
 p_statement :: Integer -> [(String,Offset)] -> Statement -> [ByteLine]
+
 p_statement stack_size _ (SReturn expr) = ret_exp stack_size expr
-p_statement _ _ _ = error "P_Statement -- not implemented"
+
+p_statement _ _ x  
+    | (get_int_declarations (return x)) /= [] = [] -- ignore int declaration
+    | otherwise = error "p_statement -- not implemented"
 
 
 
