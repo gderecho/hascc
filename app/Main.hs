@@ -1,32 +1,14 @@
 module Main where
 
 import Lexer
-
-program = unlines [
-    "SECTION .DATA",
-        "hello:      db \"Hello, world!\", 10, 0",
-        "hello_len:  equ $-hello",
-        "",
-    "SECTION .TEXT",
-        "GLOBAL main",
-        "EXTERN printf",
-        "",
-    "main:",
-        "sub rsp, 8 ",
-        "push rbx",
-        "push rbp",
-         " ",
-        "mov rdi, hello",
-        "call printf",
-        "",
-        "pop rbp",
-        "pop rbx",
-        "add rsp, 8",
-        "ret"
-    ]
+import Parser
+import Generator
+import ByteGenerator
+import Data.Either (fromRight)
 
 input_to_asm :: String -> String
-input_to_asm x = program
+input_to_asm = generator . byte_generator . fromRight [] . parseAll
 
 main :: IO ()
-main = interact input_to_asm
+main = do
+    interact input_to_asm

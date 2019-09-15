@@ -4,6 +4,92 @@ import Text.Parsec.String (Parser)
 import Text.Parsec.Language (emptyDef)
 import qualified Text.Parsec.Token as Token
 
+rnames :: [String]
+rnames = [
+        "auto",
+        "break",
+        "case",
+        "char",
+        "const",
+        "continue",
+        "default",
+        "do",
+        "double",
+        "else",
+        "enum",
+        "extern",
+        "float",
+        "for",
+        "goto",
+        "if",
+        "int",
+        "long",
+        "register",
+        "return",
+        "short",
+        "signed",
+        "sizeof",
+        "static",
+        "struct",
+        "switch",
+        "typedef",
+        "union",
+        "unsigned",
+        "void",
+        "volatile",
+        "while"
+    ]
+
+rops = [
+    "=",
+    "+=",
+    "-=",
+    "*=",
+    "/=",
+    "=",
+    "%=",
+    "&=",
+    "|=",
+    "^=",
+    "<<=",
+    ">>=",
+
+    "++",
+    "--",
+
+    "+",
+    "-",
+    "*",
+    "/",
+    "%",
+    "&",
+    "|",
+    "^",
+    "<<",
+    ">>",
+
+    "!",
+    "&&",
+    "||",
+
+    "==",
+    "!=",
+    "<",
+    ">",
+    "<=",
+    ">=",
+
+    "->",
+    ".",
+    "->*",
+    ".*",
+
+    ",",
+    "?",
+    ":"
+    
+    ]
+
 lexer :: Token.TokenParser ()
 lexer = Token.makeTokenParser style
     where 
@@ -12,13 +98,19 @@ lexer = Token.makeTokenParser style
             Token.commentEnd = "*/",
             Token.commentLine = "//",
             Token.nestedComments = True,
-            Token.reservedOpNames = ["+","-","*","/",";"],
-            Token.reservedNames = ["int","return"],
+            Token.reservedOpNames = rops,
+            Token.reservedNames = rnames,
             Token.caseSensitive = True
         }
 
 int :: Parser Integer
 int = Token.natural lexer
+
+double :: Parser Double
+double = Token.float lexer
+
+char :: Parser Char
+char = Token.charLiteral lexer
 
 braces :: Parser a -> Parser a
 braces = Token.braces lexer
@@ -29,14 +121,15 @@ parens = Token.parens lexer
 semi :: Parser String
 semi = Token.semi lexer
 
-semicolon :: Parser a -> Parser [a]
-semicolon = Token.semiSep lexer
+commasep :: Parser a -> Parser [a]
+commasep = Token.commaSep1 lexer
 
 ident :: Parser String
 ident = Token.identifier lexer
 
 reserve :: String -> Parser ()
 reserve = Token.reserved lexer
+
 
 reserveOp :: String -> Parser ()
 reserveOp = Token.reservedOp lexer

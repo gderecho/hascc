@@ -1,22 +1,28 @@
-import TestAST
 import Test.QuickCheck
 import Test.HUnit.Base as HB
 import Test.HUnit
 import System.Exit
 
+import TestAST
+import TestGenerator
+import TestParser
+import TestLexer
+
+
+list = [TestAST.tests, TestGenerator.tests, 
+    TestLexer.tests, TestParser.tests]
+
+
+-- main_help :: test -> IO ()
+main_help test = do
+    counts <- Test.HUnit.runTestTT test
+    
+    if (errors counts + failures counts /= 0)
+        then exitWith $ ExitFailure 1
+        else return ()
+
 main :: IO ()
 main = do
-    -- counts <- sequence $ fmap Test.HUnit.runTestTT TestAST.tests
-    counts <- Test.HUnit.runTestTT TestAST.tests
-    
-    if (errors counts + failures counts == 0)
-        then
-            exitWith ExitSuccess
-        else
-            exitWith $ ExitFailure 1
+    sequence $ fmap main_help list
+    exitWith ExitSuccess
 
-    --if (sum (map errors counts) + sum (map failures counts) == 0)
-    --    then
-    --        exitWith ExitSuccess
-    --    else
-    --        exitWith $ ExitFailure 1
