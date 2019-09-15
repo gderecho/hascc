@@ -7,7 +7,11 @@ import ByteGenerator
 import Data.Either (fromRight)
 
 input_to_asm :: String -> String
-input_to_asm = generator . byte_generator . fromRight [] . parseAll
+input_to_asm x = 
+    case parsed of 
+        Right a -> generator . byte_generator $ a
+        Left b -> error "Parser error"
+    where parsed = parseAll x
 
 main :: IO ()
 main = do
