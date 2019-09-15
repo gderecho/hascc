@@ -45,7 +45,7 @@ ret_exp :: Integer -> Expression -> [ByteLine]
 ret_exp stack_size (Literal (Val PInt x)) =
     concat [
         [
-            (Nothing, Just (Mov Rax (VL x)), Just "The return value"),
+            (Nothing, Just (Mov (VR Rax) (VL x)), Just "The return value"),
             (Nothing, Nothing, Nothing)
         ],
         pop_saved_registers,
@@ -56,6 +56,17 @@ ret_exp stack_size (Literal (Val PInt x)) =
     ]
 ret_exp _ _ = error "Return -- not implemented"
 
+-- SExpression (BinaryOperator Assign (Variable "a") (Literal (Val PInt "3")))
+
+-- processes the body of an SExpression
+p_expression :: [(String,Offset)] -> Expression -> [ByteLine]
+p_expression 
+    vars 
+    (BinaryOperator Assign (Variable x) (Literal (Val PInt value)))
+        = [(Nothing, Just (Mov (VDeref Rsp offset) (VL value)),Just ("Assign to the variable " ++ show x))]
+        where offset = find_var x vars 
+
+p_expression _ _ = error "p_expression -- not implemented"
 
 -- p_statement: Processes a statement within a function
 -- Parameter 1: The stack size
@@ -64,6 +75,9 @@ ret_exp _ _ = error "Return -- not implemented"
 p_statement :: Integer -> [(String,Offset)] -> Statement -> [ByteLine]
 
 p_statement stack_size _ (SReturn expr) = ret_exp stack_size expr
+
+p_statement stack_size vars (SExpression e) = p_expression vars e
+
 
 p_statement _ _ x  
     | (get_int_declarations (return x)) /= [] = [] -- ignore int declaration
@@ -90,7 +104,7 @@ fdefinition (SFnDefinition
                 (Nothing, Nothing,Nothing),
                 (Nothing, Just (Push Rax),Nothing),
                 (Nothing, Just (Xor Rax Rax),Nothing),
-                (Nothing, Just (Mov Rdi (VL "hello")),Nothing),
+                (Nothing, Just (Mov (VR Rdi) (VL "hello")),Nothing),
                 (Nothing, Just (Call "printf"),Nothing),
                 (Nothing, Just (Pop Rax),Nothing),
                 (Nothing, Nothing,Nothing)

@@ -12,10 +12,23 @@ import Ast
 
 binary s f assoc = Expr.Infix (Lexer.reserveOp s >> return (BinaryOperator f)) assoc
 
-table = [[binary "*" Times Expr.AssocLeft,
-          binary "/" Divide Expr.AssocLeft],
-         [binary "+" Plus Expr.AssocLeft, 
-          binary "-" Minus Expr.AssocLeft]]
+table = [
+            [
+                binary "*" Times Expr.AssocLeft,
+                binary "/" Divide Expr.AssocLeft
+            ],
+            [
+                binary "+" Plus Expr.AssocLeft, 
+                binary "-" Minus Expr.AssocLeft
+            ],
+            [
+                binary "<<" ShiftL Expr.AssocLeft,
+                binary ">>" ShiftR Expr.AssocLeft
+            ],
+            [
+                binary "=" Assign Expr.AssocLeft
+            ]
+        ]
 
 primitive :: Parser Primitive
 primitive = 
@@ -229,6 +242,11 @@ double = do
     n <- Lexer.double
     return $ Literal $ Val PDouble $ show n
 
+variable :: Parser Expression
+variable = do
+    id <- ident
+    return $ Variable id
+
 string_literal :: Parser Expression
 string_literal = do
     n <- Lexer.cchar_p
@@ -257,6 +275,7 @@ factor = try Parser.double
     <|> try Parser.int
     <|> try Parser.string_literal
     <|> try Parser.fn_call
+    <|> try Parser.variable
 
 
 contents :: Parser a -> Parser a

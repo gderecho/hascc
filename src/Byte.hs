@@ -52,15 +52,19 @@ type Label = String
 
 data Value =
     VR Register |
-    VL String
+    VL String   |
+    VDeref Register Integer
     deriving (Eq)
 
 instance Show Value where
     show (VR x) = show x
     show (VL x) = show x
+    show (VDeref x y) 
+        = "[" ++ show x ++ 
+              " + "++ show y ++ "]"
 
 data Instruction =
-    Mov Register Value       |
+    Mov Value Value          |
     Add Register Value       |
     Sub Register Value       |
     Cmp Register Register    |

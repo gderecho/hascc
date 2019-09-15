@@ -32,6 +32,7 @@ type Specifier = Primitive
 data Expression = 
     BinaryOperator Operator Expression Expression |
     Literal Val                                   |
+    Variable Identifier                           |
     Function String [Expression]                  |
     FnCall Identifier [Expression]
     deriving (Show,Eq)
@@ -105,8 +106,11 @@ data LStatement =
 -}
     
 data Operator = 
-    Plus  | 
-    Minus |
-    Times |
-    Divide
+    Plus   | 
+    Minus  |
+    Times  |
+    Divide |
+    ShiftL |
+    ShiftR |
+    Assign
     deriving (Show,Eq)
