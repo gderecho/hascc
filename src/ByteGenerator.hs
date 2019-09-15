@@ -41,11 +41,12 @@ pop_saved_registers = map (\x ->
                 ) . reverse $ registers_to_save
 
 
-ret_exp :: Integer -> Expression -> [ByteLine]
-ret_exp stack_size (Literal (Val PInt x)) =
+ret_exp :: Integer -> [(String,Offset)] -> Expression -> [ByteLine]
+ret_exp stack_size vars exp =
     concat [
+        fst exp_result,
         [
-            (Nothing, Just (Mov (VR Rax) (VL x)), Just "The return value"),
+            (Nothing, Just (Mov (VR Rax) (snd exp_result)), Just "The return value"),
             (Nothing, Nothing, Nothing)
         ],
         pop_saved_registers,
@@ -54,17 +55,21 @@ ret_exp stack_size (Literal (Val PInt x)) =
             (Nothing, Just Ret, Nothing)
         ]
     ]
-ret_exp _ _ = error "Return -- not implemented"
+    where exp_result = p_expression vars exp
 
 -- SExpression (BinaryOperator Assign (Variable "a") (Literal (Val PInt "3")))
 
 -- processes the body of an SExpression
-p_expression :: [(String,Offset)] -> Expression -> [ByteLine]
+p_expression :: [(String,Offset)] -> Expression -> ([ByteLine],Value)
 p_expression 
-    vars 
-    (BinaryOperator Assign (Variable x) (Literal (Val PInt value)))
-        = [(Nothing, Just (Mov (VQword(VDeref Rsp offset)) (VL value)),Just ("Assign to the variable " ++ show x))]
+    vars (BinaryOperator Assign (Variable x) (Literal (Val PInt value)))
+        = ([(Nothing, Just (Mov (VQword(VDeref Rsp offset)) (VL value)),Just ("Assign to the variable " ++ show x))], VL value)
         where offset = find_var x vars 
+
+p_expression vars (Variable x) = ([],VQword(VDeref Rsp offset))
+    where offset = find_var x vars
+
+p_expression vars (Literal (Val PInt y)) = ([],(VL y))
 
 p_expression _ _ = error "p_expression -- not implemented"
 
@@ -74,9 +79,9 @@ p_expression _ _ = error "p_expression -- not implemented"
 -- Parameter 3: The statement to process
 p_statement :: Integer -> [(String,Offset)] -> Statement -> [ByteLine]
 
-p_statement stack_size _ (SReturn expr) = ret_exp stack_size expr
+p_statement stack_size vars (SReturn expr) = ret_exp stack_size vars expr
 
-p_statement stack_size vars (SExpression e) = p_expression vars e
+p_statement stack_size vars (SExpression e) = fst (p_expression vars e)
 
 
 p_statement _ _ x  
