@@ -8,10 +8,10 @@ The haskell c compiler.
 - Clone this repository, and change directories to `asm/`. 
 - Create the following as ./main.c:
 
-    int main()
-    {
-        return 123;
-    }
+        int main()
+        {
+            return 123;
+        }
     
 - Execute `stack build`
 - Execute `cat main.c | bash ./compile.sh`
