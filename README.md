@@ -1,7 +1,8 @@
 ### Project hascc
 The haskell c compiler.
 
-##### Status: Almost completely non-functional
+##### Status: Almost completely non-functional.
+##### Targets: Currently, only x86-64 linux.
 
 ### Example usage
 
@@ -27,11 +28,14 @@ The output is
 
 
 ### Goals
-The current aim is to compile c files to nasm x86-64 linux assembly output.
+The current aim is to compile C files to nasm x86-64 linux assembly output.
 
 The project hopes to later target LLVM or .net or JVM or other assembly syntax.
 
 
+### Dependencies 
+
+ - [nasm](https://www.nasm.us/) (the netwide assembler)
 
 ### Credits: Resources Used
  - Nora Sandler's c compiler blog https://norasandler.com/2017/11/29/Write-a-Compiler.html
