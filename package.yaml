@@ -1,8 +1,8 @@
 name:                hascc
 version:             0.1.0.0
-github:              "githubuser/hascc"
+github:              "gderecho/hascc"
 license:             BSD3
-author:              "Author name here"
+author:              "gderecho"
 maintainer:          "example@example.com"
 copyright:           "2019 Author name here"
 
